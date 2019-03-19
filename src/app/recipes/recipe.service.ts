@@ -1,10 +1,11 @@
-import {Recipe} from './recipe.model';
-import {Ingredient} from '../shared/ingredient.model';
-import {EventEmitter} from '@angular/core';
+import { Recipe } from './recipe.model';
+import { Ingredient } from '../shared/ingredient.model';
+import { EventEmitter } from '@angular/core';
 
 export class RecipeService {
 
   recipeSelected = new EventEmitter<Recipe>();
+  recipeCreated = new EventEmitter<void>()
 
   private recipes: Recipe[] = [
     new Recipe(1, 'A Test Recipe', 'first description',
@@ -20,6 +21,26 @@ export class RecipeService {
   }
 
   findById(id: number) {
-    return this.recipes.find(recipe => recipe.id == id);
+
+    const recipeWithReference = this.recipes.find(recipe => recipe.id == id);
+
+    const recipeCopy = JSON.parse(JSON.stringify(recipeWithReference));
+    return recipeCopy;
+  }
+
+  update(recipe: Recipe) {
+    const recipeToUpdate = this.recipes[recipe.id - 1];
+
+    recipeToUpdate.imagePath = recipe.imagePath;
+    recipeToUpdate.description = recipe.description;
+    recipeToUpdate.name = recipe.name;
+  }
+
+  create(name: string, description: string, imagePath: string): number {
+    const id = this.recipes.length + 1;
+    const newRecipe = new Recipe(id, name, description, imagePath, []);
+    this.recipes.push(newRecipe);
+    this.recipeCreated.emit();
+    return id;
   }
 }
