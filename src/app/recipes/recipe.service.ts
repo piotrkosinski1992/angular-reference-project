@@ -1,10 +1,11 @@
 import { Recipe } from './recipe.model';
 import { Ingredient } from '../shared/ingredient.model';
 import { EventEmitter } from '@angular/core';
+import { Subject } from 'rxjs';
 
 export class RecipeService {
 
-  recipeCreated = new EventEmitter<void>()
+  recipeCreated = new Subject<void>();
 
   private recipes: Recipe[] = [
     new Recipe(1, 'A Test Recipe', 'first description',
@@ -35,11 +36,12 @@ export class RecipeService {
     recipeToUpdate.name = recipe.name;
   }
 
-  create(name: string, description: string, imagePath: string): number {
+  create(recipe: Recipe): number {
     const id = this.recipes.length + 1;
-    const newRecipe = new Recipe(id, name, description, imagePath, []);
-    this.recipes.push(newRecipe);
-    this.recipeCreated.emit();
+    recipe.id = id;
+    this.recipes.push(recipe);
+    this.recipeCreated.next();
     return id;
   }
+
 }

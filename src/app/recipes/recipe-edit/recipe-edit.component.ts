@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Recipe } from '../recipe.model';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RecipeService } from '../recipe.service';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
+import { Recipe } from '../recipe.model';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -10,41 +11,30 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 })
 export class RecipeEditComponent implements OnInit {
 
-  recipe: Recipe;
+  @ViewChild('editRecipeForm') recipeForm: NgForm;
 
-  newId: number;
-
-  name = '';
-  description = '';
-  imagePath = '';
-
+  recipe = new Recipe(null, '', '', '', []);
   editMode = false;
 
   constructor(private recipeService: RecipeService, private route: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit() {
-    const pathId = this.route.snapshot.params['id'];
-
-    if (pathId !== undefined) {
+    if (this.route.snapshot.params['id'] !== undefined) {
       this.recipe = this.recipeService.findById(this.route.snapshot.params['id']);
-      this.name = this.recipe.name;
-      this.imagePath = this.recipe.imagePath;
-      this.description = this.recipe.description
       this.editMode = true;
     }
   }
 
-
-  onEdit() {
-    this.recipe.name = this.name;
-    this.recipe.imagePath = this.imagePath;
-    this.recipe.description = this.description;
-    this.recipeService.update(this.recipe);
+  onSubmit() {
+    if (this.editMode) {
+      this.recipeService.update(this.recipe);
+      this.router.navigate(['../'], {relativeTo: this.route});
+    } else {
+      const recipeId = this.recipeService.create(this.recipe);
+      this.router.navigate(['../' + recipeId], {relativeTo: this.route});
+    }
   }
 
-  onCreate() {
-    this.newId = this.recipeService.create(this.name, this.description, this.imagePath);
-    this.router.navigate(['../' + this.newId], {relativeTo: this.route});
-  }
+
 }

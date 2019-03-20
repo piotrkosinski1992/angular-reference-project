@@ -1,30 +1,37 @@
 <div class="row">
     <div class="col-xs-12">
-        <form>
+        <form ngForm #editRecipeForm="ngForm" (ngSubmit)="onSubmit()">
             <div class="row">
                 <div class="col-sm-5 form-group">
                     <label>Name</label>
-                    <input type="text" name="name" id="name" [(ngModel)]="name" class="form-control">
+                    <input for="name" [(ngModel)]="recipe.name" type="text" name="name" id="name" class="form-control"
+                        required
+                    >
                 </div>
                 <div class="col-sm-2 form-group">
                     <label>Description</label>
-                    <input type="text" name="description" id="description" [(ngModel)]="description" class="form-control">
+                    <input for="description" [(ngModel)]="recipe.description" type="text" name="description" id="description" class="form-control"
+                           required
+                    >
                 </div>
                 <div class="col-sm-2 form-group">
                     <label>ImagePath</label>
-                    <input type="text" name="imagePath" id="imagePath" [(ngModel)]="imagePath" class="form-control">
+                    <input for="imagePath"
+                            required
+                            [(ngModel)]="recipe.imagePath"
+                            type="text" name="imagePath" id="imagePath" class="form-control">
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12" *ngIf="editMode">
-                    <button class="btn btn-primary" type="button" routerLink="../" (click)="onEdit()">Confirm Edit</button>
+                <div class="col-xs-12">
+                    <button [disabled]="!editRecipeForm.valid" class="btn btn-primary" type="submit">{{editMode ? 'Update': 'Add'}}</button>
                 </div>
             </div>
-            <div class="row">
+<!--            <div class="row">
                 <div class="col-xs-12" *ngIf="!editMode">
                     <button class="btn btn-primary" type="button" (click)="onCreate()">Create</button>
                 </div>
-            </div>
+            </div>-->
         </form>
     </div>
 </div>
