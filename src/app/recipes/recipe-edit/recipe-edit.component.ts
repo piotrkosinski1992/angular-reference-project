@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { RecipeService } from '../recipe.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NgForm } from '@angular/forms';
-import { Recipe } from '../recipe.model';
+import {Component, OnInit} from '@angular/core';
+import {RecipeService} from '../recipe.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Recipe} from '../recipe.model';
+import {Ingredient} from '../../shared/ingredient.model';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -10,8 +10,6 @@ import { Recipe } from '../recipe.model';
   styleUrls: ['./recipe-edit.component.css']
 })
 export class RecipeEditComponent implements OnInit {
-
-  @ViewChild('editRecipeForm') recipeForm: NgForm;
 
   recipe = new Recipe(null, '', '', '', []);
   editMode = false;
@@ -24,6 +22,10 @@ export class RecipeEditComponent implements OnInit {
       this.recipe = this.recipeService.findById(this.route.snapshot.params['id']);
       this.editMode = true;
     }
+
+    this.recipeService.ingredientsChanged.subscribe((recipeId: number) => {
+      this.recipe = this.recipeService.findById(recipeId);
+    });
   }
 
   onSubmit() {
@@ -37,4 +39,15 @@ export class RecipeEditComponent implements OnInit {
   }
 
 
+  onCancel() {
+    this.router.navigate(['../'], {relativeTo: this.route});
+  }
+
+  onAddIngredient() {
+    this.recipe.ingredients.push(new Ingredient('', null));
+  }
+
+  onDeleteIngredient(index: number) {
+    this.recipe.ingredients.splice(index, 1);
+  }
 }

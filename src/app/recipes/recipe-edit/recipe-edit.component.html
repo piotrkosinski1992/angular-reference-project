@@ -1,37 +1,108 @@
 <div class="row">
-    <div class="col-xs-12">
-        <form ngForm #editRecipeForm="ngForm" (ngSubmit)="onSubmit()">
-            <div class="row">
-                <div class="col-sm-5 form-group">
-                    <label>Name</label>
-                    <input for="name" [(ngModel)]="recipe.name" type="text" name="name" id="name" class="form-control"
-                        required
-                    >
-                </div>
-                <div class="col-sm-2 form-group">
-                    <label>Description</label>
-                    <input for="description" [(ngModel)]="recipe.description" type="text" name="description" id="description" class="form-control"
-                           required
-                    >
-                </div>
-                <div class="col-sm-2 form-group">
-                    <label>ImagePath</label>
-                    <input for="imagePath"
-                            required
-                            [(ngModel)]="recipe.imagePath"
-                            type="text" name="imagePath" id="imagePath" class="form-control">
-                </div>
+  <div class="col-xs-12">
+    <form ngForm #recipeForm="ngForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-xs-12">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!recipeForm.valid">{{editMode ? 'Update': 'Save'}}
+          </button>
+          <button type="button" class="btn btn-danger" (click)="onCancel()">Cancel</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input
+              required
+              type="text"
+              id="name"
+              name="name"
+              [(ngModel)]="recipe.name"
+              class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="imagePath">Image URL</label>
+            <input
+              required
+              type="text"
+              name="imagePath"
+              id="imagePath"
+              [(ngModel)]="recipe.imagePath"
+              class="form-control"
+              #imagePath>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <img  style="max-height: 300px;" [src]="imagePath.value"  class="img-responsive">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea
+              required
+              type="text"
+              name="description"
+              id="description"
+              class="form-control"
+              [(ngModel)]="recipe.description"
+              rows="6"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div
+            class="row"
+            *ngFor="let ingredient of recipe.ingredients; let i = index"
+            style="margin-top: 10px;">
+            <div class="col-xs-8">
+              <input
+                type="text"
+                class="form-control"
+                name="ingName"
+                [(ngModel)]="ingredient.name"
+                [value]="ingredient.name"
+                >
             </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <button [disabled]="!editRecipeForm.valid" class="btn btn-primary" type="submit">{{editMode ? 'Update': 'Add'}}</button>
-                </div>
+            <div class="col-xs-2">
+              <input
+                type="number"
+                class="form-control"
+                name="ingAmount"
+                [(ngModel)]="ingredient.amount"
+                [value]="ingredient.amount">
             </div>
-<!--            <div class="row">
-                <div class="col-xs-12" *ngIf="!editMode">
-                    <button class="btn btn-primary" type="button" (click)="onCreate()">Create</button>
-                </div>
-            </div>-->
-        </form>
-    </div>
+            <div class="col-xs-2">
+              <button
+                type="button"
+                class="btn btn-danger"
+                (click)="onDeleteIngredient(i)">X
+              </button>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-xs-12">
+              <button
+                type="button"
+                class="btn btn-success"
+                (click)="onAddIngredient()">Add Ingredient
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
