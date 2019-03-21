@@ -5,10 +5,10 @@ import {Subject} from 'rxjs';
 export class RecipeService {
 
   recipesChanged = new Subject<void>();
-  ingredientsChanged = new Subject<number>()
+  ingredientsChanged = new Subject<number>();
 
   private recipes: Recipe[] = [
-    new Recipe(1, 'A Test Recipe', 'first description',
+    new Recipe(1, 'A Test Recipe!', 'first description',
       'https://cdlb.mkcsites.com/-/media/kamispl-2016/recipe/800/kurczak_w_sosie_pieczarkowym_800.ashx?vd=20180617T005449Z&hash=73352D24F6B0CDDD39E8D5BB6A04E27A3BDBB72C',
       [new Ingredient('apples', 5), new Ingredient('bananas', 3), new Ingredient('COKOS', 55)]),
     new Recipe(2, 'B Test Recipe', 'second description',
@@ -43,6 +43,11 @@ export class RecipeService {
 
   remove(recipe: Recipe) {
     this.recipes = this.recipes.filter((r: Recipe) => r.id !== recipe.id);
+    this.recipesChanged.next();
+  }
+
+  updateAll(recipes: Recipe[]) {
+    this.recipes = recipes;
     this.recipesChanged.next();
   }
 }
